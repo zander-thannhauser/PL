@@ -1,0 +1,3 @@
+
+extern struct statement_inheritance assignment_statement_inheritance;
+

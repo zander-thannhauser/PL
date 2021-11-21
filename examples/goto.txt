@@ -1,0 +1,7 @@
+
+if !x then
+	b: y <- 1;
+else
+	goto b;
+end
+

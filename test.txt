@@ -1,0 +1,26 @@
+
+# comment!
+
+# 'x' is set on the command-line
+
+a <- 100;
+
+# if x > 0 then
+while x > 0 do
+# loop x do
+	if x > 2 then
+		y <- x - 2;
+	else
+		y <- 0;
+	end
+	
+	z <- y;
+	x <- z;
+	a <- 0;
+	
+	# if (x != a) then stop; end
+end
+
+# all variables are printed out at the end
+
+
