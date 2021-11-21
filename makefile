@@ -94,8 +94,9 @@ ARGS += -v
 #ARGS += -d 'x = 3'
 ARGS += -d 'x = 9'
 
-ARGS += ./test.txt
+#ARGS += ./test.txt
 #ARGS += ./examples/arith.txt
+ARGS += ./examples/fibonacci.txt
 #ARGS += ./examples/goto.txt
 
 BUILDPATH = $(BUILDTYPE)/$(USE_GMP)
