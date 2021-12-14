@@ -13,8 +13,8 @@ Below is the overall structure of the program:
 4. Open and Parse Input File, yielding a statement graph.
 5. **statement =** start
 6. **while statement != NULL**:
-  1. Execute statement, yielding the next statement to execute.
-  2. **statement =** next statement
+    1. Execute statement, yielding the next statement to execute.
+    2. **statement =** next statement
 7. Print all variables in scope
 8. Free statement graph
 9. Free scopes
