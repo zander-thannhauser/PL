@@ -1,4 +1,7 @@
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include <gmp.h>
 
 #include <debug.h>
@@ -114,10 +117,10 @@ int binary_expression_evaluate(
 				
 				if (mpz_sgn(result) < 0)
 				{
-					TODO; // set to zero
+					*out_value = vinc(scope->zero);
+					mpz_clear(result);
 				}
-				
-				if ((error = new_value_from_mpz(out_value, result)))
+				else if ((error = new_value_from_mpz(out_value, result)))
 					mpz_clear(result);
 				break;
 			}
@@ -133,10 +136,8 @@ int binary_expression_evaluate(
 				break;
 			}
 			
-			default:
-				dpv(this->kind);
-				TODO;
-				break;
+			case number_of_binary_operators:
+				abort();
 		}
 	}
 	

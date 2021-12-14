@@ -1,0 +1,107 @@
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{amsmath}
+
+\pagenumbering{gobble}
+
+\begin{document}
+{
+	\title{CS 6800: Project Proposal}
+	\author{Alex Thannhauser}
+	\date{December 13th 2021}
+	
+	\maketitle
+	
+	\section{Project Specification}
+	{
+		The main goal of this project is to write an implmentation for the
+		extended PL language described by the grammar:
+		
+		\begin{align*}
+			\langle letter \rangle =& \text{A} \cup \text{B} \cup \cdots \cup \text{Z}\\
+			\langle digit \rangle =& \text{0} \cup \text{1} \cup \cdots \cup \text{9}\\
+			\langle name \rangle =& \langle digit \rangle
+				\cup \langle name \rangle \langle digit \rangle
+				\cup \langle name \rangle \langle letter \rangle\\
+			\langle numeral \rangle =& \langle digit \rangle
+				\cup \langle numeral \rangle \langle digit \rangle\\
+			\langle operation \rangle =& + \cup - \cup \times \cup / \cup =
+				\cup \neq \cup > \cup \geq \cup < \cup \leq \cup \lor \cup \land\\
+			\langle expression \rangle =& \langle name \rangle
+				\cup \langle numeral \rangle
+				\cup \lnot \langle expression \rangle\\
+				& \cup \langle expression \rangle \langle operation \rangle \langle expression \rangle\\
+			\langle assignment \rangle =& \langle name \rangle \leftarrow \langle expression \rangle\\
+			\langle instruction \rangle =& \langle assignment \rangle
+				\cup \text{GOTO} \langle name \rangle
+				\cup \text{STOP}\\
+			\langle \textit{label instruction} \rangle =& \langle name \rangle: \langle assignment \rangle
+				\cup \langle assignment \rangle\\
+			\langle \textit{loop} \rangle =& \text{LOOP } \langle expression \rangle;
+				\cup \langle name \rangle: \text{LOOP } \langle expression \rangle;\\
+			\langle \textit{if-then} \rangle =& \text{IF } \langle assignment \rangle \text{THEN };
+				\cup \langle name \rangle: \text{IF } \langle assignment \rangle \text{THEN };\\
+			\langle while \rangle =& \text{WHILE } \langle assignment \rangle;
+				\cup \langle name \rangle: \text{WHILE } \langle assignment \rangle;\\
+			\langle end \rangle =& \text{END };
+				\cup \langle name \rangle: \text{END };\\
+			\langle program \rangle =& \langle \textit{label instruction} \rangle\\
+				& \cup \langle loop \rangle \langle program \rangle \langle end \rangle\\
+				& \cup \langle while \rangle \langle program \rangle \langle end \rangle\\
+				& \cup \langle \textit{if-then} \rangle \langle program \rangle \langle end \rangle\\
+				& \cup \langle \textit{if-then} \rangle \langle program \rangle \text{ELSE} \langle program \rangle \langle end \rangle\\
+				& \cup \langle program \rangle \langle program \rangle\\
+		\end{align*}
+		
+	}
+	
+	\section{Project Goals}
+	{
+		\begin{enumerate}
+			\item rearrange grammar such that \texttt{bison} \& \texttt{flex}
+			can generate a parser without errors.
+			\item use the reduction rules in generated parser to generate
+			expression trees and statement graphs
+			\item implement main computation loop and expression evaluation code
+			using GMP for integer computation.
+		\end{enumerate}
+	}
+	
+	\section{Team Members}
+	{
+		Team Members include just me, Alex Thannhauser.
+	}
+	
+	\section{References}
+	{
+		\begin{itemize}
+			\item https://gmplib.org/
+			\item \textbf{Theory of Computation} by Walter S. Brainerd, page 38.
+		\end{itemize}
+	}
+
+}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

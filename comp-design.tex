@@ -1,0 +1,160 @@
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{amsmath}
+
+\pagenumbering{gobble}
+
+\begin{document}
+{
+	\title{CS 6800: Comprehensive Design Document}
+	\author{Alex Thannhauser}
+	\date{December 13th 2021}
+
+	\maketitle
+	
+	\section{Survey of the Design}
+	{
+		\subsection{Scanner and New Grammar Structure}
+		{
+			The original grammar had to be rearranged to support operator
+			precedence and to remove the shift/reduce errors. The grammar rules
+			for $\langle letter \rangle$, $\langle digit \rangle$,
+			$\langle name \rangle$, and $\langle numeral \rangle$ have been made
+			into tokens. Below is the new structure for the grammar:
+			
+			\begin{align*}
+				\langle \textit{primary\_expression} \rangle =
+					& \text{ NAME }\\
+					& \cup \text{ NUMERAL }\\
+					& \cup ( \langle expression \rangle )\\
+				\langle \textit{prefix\_expression} \rangle =
+					& \langle \textit{primary\_expression} \rangle\\
+					& \cup NOT \langle \textit{primary\_expression} \rangle\\
+				\langle \textit{multiplicative\_expression} \rangle =
+					& \langle \textit{prefix\_expression} \rangle\\
+					& \cup \langle \textit{multiplicative\_expression} \rangle \times \langle \textit{prefix\_expression} \rangle\\
+					& \cup \langle \textit{multiplicative\_expression} \rangle / \langle \textit{prefix\_expression} \rangle\\
+				\langle \textit{additive\_expression} \rangle =
+					& \langle \textit{multiplicative\_expression} \rangle\\
+					& \cup \langle \textit{additive\_expression} \rangle + \langle \textit{multiplicative\_expression} \rangle\\
+					& \cup \langle \textit{additive\_expression} \rangle - \langle \textit{multiplicative\_expression} \rangle\\
+				\langle \textit{relational\_expression} \rangle =
+					& \langle \textit{additive\_expression} \rangle\\
+					& \cup \langle \textit{additive\_expression} \rangle < \langle \textit{additive\_expression} \rangle\\
+					& \cup \langle \textit{additive\_expression} \rangle > \langle \textit{additive\_expression} \rangle\\
+					& \cup \langle \textit{additive\_expression} \rangle \leq \langle \textit{additive\_expression} \rangle\\
+					& \cup \langle \textit{additive\_expression} \rangle \geq \langle \textit{additive\_expression} \rangle\\
+				\langle \textit{equality\_expression} \rangle =
+					& \langle \textit{relational\_expression} \rangle\\
+					& \cup \langle \textit{relational\_expression} \rangle = \langle \textit{relational\_expression} \rangle\\
+					& \cup \langle \textit{relational\_expression} \rangle \neq \langle \textit{relational\_expression} \rangle\\
+				\langle \textit{logical\_and\_expression} \rangle =
+					& \langle \textit{equality\_expression} \rangle\\
+					& \cup \langle \textit{equality\_expression} \rangle \land \langle \textit{equality\_expression} \rangle\\
+				\langle \textit{logical\_or\_expression} \rangle =
+					& \langle \textit{logical\_and\_expression} \rangle\\
+					& \cup \langle \textit{logical\_and\_expression} \rangle \lor \langle \textit{logical\_and\_expression} \rangle\\
+				\langle \textit{expression} \rangle = & \langle \textit{logical\_or\_expression} \rangle\\
+				\langle \textit{maybe\_else} \rangle =
+					& \cup \text{ ELSE } \langle \textit{statement\_plus} \rangle\\
+				\langle \textit{statement} \rangle =
+					& \text{ NAME } \text{ COLON } \langle \textit{statement} \rangle\\
+					& \cup \text{ NAME } \text{ ASSIGN } \langle \textit{expression} \rangle\\
+					& \cup \text{ GOTO } \text{ NAME } \\
+					& \cup \text{ STOP } \\
+					& \cup \text{ LOOP } \langle \textit{expression} \rangle \text{ DO } \langle \textit{statement\_plus} \rangle \text{ END }\\
+					& \cup \text{ WHILE } \langle \textit{expression} \rangle \text{ DO } \langle \textit{statement\_plus} \rangle \text{ END }\\
+					& \cup \text{ IF } \langle \textit{expression} \rangle \text{ THEN }
+						\langle \textit{statement\_plus} \rangle \langle \textit{maybe\_else} \rangle \text{ END }\\
+				\langle \textit{statement\_plus} \rangle =
+					& \langle \textit{statement} \rangle \\
+					& \cup \langle \textit{statement} \rangle \langle \textit{statement\_plus} \rangle\\
+				\langle \textit{program} \rangle = &\langle \textit{statement\_plus} \rangle\\
+			\end{align*}
+			
+		}
+		
+		\subsection{Program Structure}
+		{
+			Below is the overall structure of the program:
+			\begin{enumerate}
+			{
+				\item Parse command-line flags
+				\item Allocate variable and label scope. (\texttt{avl\_alloc\_tree})
+				\item Add each variable declared in the command-line flags into
+					variable scope (\texttt{avl\_insert})
+				\item Open and Parse Input File, yielding a statement graph.
+				\item \texttt{statement = } start
+				\item \texttt{while statement != NULL}:
+				\begin{enumerate}
+					\item Execute statement, yielding the next statement to execute:
+						\begin{itemize}
+							\item assignment statement:
+								Evaluate the expression tree and either declare
+								(\texttt{avl\_insert}) or assign (\texttt{avl\_search})
+								the named variable's value.
+							\item goto statement:
+								set \texttt{next statement} to the statement
+								associated with the given label.
+							\item if-else statement:
+								evaluate expression-tree conditional. If the
+								result is a non-zero value, set
+								\texttt{next statement} to refer to the first
+								statement of the true case, otherwise: false
+								case.
+							\item while statement:
+								The reduction rules for the while statement
+								create a if-else statement where the 'true-case'
+								would refer to the body of the while loop, with
+								an added GOTO back to the conditional added to
+								the end, and where the 'false-case' refers to
+								the first statement after the while loop.
+							\item loop statement:
+								if it is the first time executing this statement,
+								evaluate expression tree and save result, otherwise:
+								use already saved value.
+								if value is nonzero, set \texttt{next statement}
+								to the first statement of the body and decrement
+								value, otherwise: the first statement after the
+								loop and consider next time executing as
+								"first time".
+								The reduction rules that generated the loop
+								statement add a GOTO back to the loop statement
+								at the end of the body.
+						\end{itemize}
+					\item set current statement to \texttt{next statement}
+				\end{enumerate}
+				\item Print all variables in scope
+				\item Free statement graph
+				\item Free scopes
+				\item Free command-line flags
+			}
+			\end{enumerate}
+		}
+	}
+
+}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

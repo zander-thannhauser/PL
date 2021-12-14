@@ -10,15 +10,18 @@ void free_flags(struct cmdln_flags* flags)
 {
 	ENTER;
 	
-	struct cmdln_variable* prev;
-	while (flags->variables)
+	if (flags)
 	{
-		prev = flags->variables->prev;
-		free(flags->variables);
-		flags->variables = prev;
+		struct cmdln_variable* prev;
+		while (flags->variables)
+		{
+			prev = flags->variables->prev;
+			free(flags->variables);
+			flags->variables = prev;
+		}
+		
+		free(flags);
 	}
-	
-	free(flags);
 	
 	EXIT;
 }

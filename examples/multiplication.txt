@@ -1,0 +1,7 @@
+
+# 'x' and 'y' are expected to be declared on the command-line
+
+z <- 0;
+loop y do
+	z <- z + x;
+end

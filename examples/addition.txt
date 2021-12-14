@@ -1,0 +1,11 @@
+
+# 'x' and 'y' are expected to be declared on the command-line
+
+z <- 0;
+loop x do
+	z <- z + 1;
+end
+loop y do
+	z <- z + 1;
+end
+

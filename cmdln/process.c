@@ -33,8 +33,9 @@ static int process_define_argument(
 	
 	if (!(equals = index(optarg, '=')))
 	{
-		TODO;
-		error = 1;
+		fprintf(stderr, "variable declarations on the command line "
+			"should follow the format: 'name = value'!\n");
+		error = e_bad_cmdline_args;
 	}
 	
 	if (!error)

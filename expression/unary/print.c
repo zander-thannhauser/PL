@@ -20,12 +20,7 @@ void unary_expression_print(
 	
 	const char* operator = operators[this->kind];
 	
-	if (!operator)
-	{
-		TODO;
-	}
-	
-	dpvs(operator);
+	assert(operator);
 	
 	printf("%s", operator);
 	

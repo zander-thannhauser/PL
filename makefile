@@ -38,7 +38,12 @@ endif
 
 USE_GMP ?= system
 
-default: gen/$(BUILDTYPE)/$(USE_GMP)/pl
+BUILDPATH = BUILDTYPE=$(BUILDTYPE)/USE_GMP=$(USE_GMP)
+
+default: gen/pl
+
+gen/pl: gen/$(BUILDPATH)/pl
+	cp $< $@
 
 .PRECIOUS: %/
 %/:
@@ -70,14 +75,16 @@ LEX = flex
 
 SRCDIRS += avl
 SRCDIRS += cmdln
+SRCDIRS += defines
+SRCDIRS += enums
 SRCDIRS += expression
+SRCDIRS += macros
 SRCDIRS += memory
 SRCDIRS += label_scope
 SRCDIRS += next_ll
 SRCDIRS += parser
 SRCDIRS += scope
 SRCDIRS += statement
-SRCDIRS += statement_ll
 SRCDIRS += string
 SRCDIRS += value
 SRCDIRS += main.c
@@ -92,14 +99,16 @@ include gen/srclist.mk
 ARGS += -v
 
 #ARGS += -d 'x = 3'
-ARGS += -d 'x = 9'
+#ARGS += -d 'x = 9'
+#ARGS += -d 'a = 3' -d 'b = 5' -d 'c = 2'
+#ARGS += -d 'a = 2' -d 'b = 5' -d 'c = 3'
+ARGS += -d 'a = 3' -d 'b = 2' -d 'c = 5'
 
 #ARGS += ./test.txt
 #ARGS += ./examples/arith.txt
-ARGS += ./examples/fibonacci.txt
+#ARGS += ./examples/sort-3.txt
 #ARGS += ./examples/goto.txt
-
-BUILDPATH = $(BUILDTYPE)/$(USE_GMP)
+ARGS += ./examples/multiple-labels.txt
 
 run: gen/$(BUILDPATH)/pl
 	$< ${ARGS}
@@ -117,10 +126,22 @@ gen/$(BUILDPATH)/pl: $(patsubst %.c,gen/$(BUILDPATH)/%.o,$(srcs))
 	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 gen/$(BUILDPATH)/%.d: %.c | gen/$(BUILDPATH)/%/
-	$(CPP) $(CPPFLAGS) $< -MM -MT $@ -MF $@ || (gedit $<; false)
+	$(CPP) $(CPPFLAGS) $< -MM -MT $@ -MF $@
 
 gen/$(BUILDPATH)/%.o: %.c gen/$(BUILDPATH)/%.d | gen/$(BUILDPATH)/%/
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@ || (gedit $<; false)
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+
+gen/PL.zip: $(SRCDIRS) examples/ *.h *.tex *.mk *.txt makefile README.md
+	zip -r $@ $^
+
+docs: gen/proposal.pdf
+docs: gen/prelim-design.pdf
+docs: gen/comp-design.pdf
+docs: gen/testing-design.pdf
+docs: gen/final-report.pdf
+
+gen/%.pdf: %.tex
+	cd $(@D); pdflatex ../$<
 
 clean:
 	for l in $$(cat .gitignore); do rm -rvf $$l; done

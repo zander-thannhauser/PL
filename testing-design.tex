@@ -1,0 +1,127 @@
+
+\documentclass[letterpaper,11pt]{article}
+
+\pagenumbering{gobble}
+
+\begin{document}
+{
+	\title{CS 6800: Testing Design Document}
+	\author{Alex Thannhauser}
+	\date{December 13th 2021}
+
+	\maketitle
+	
+	\section{Design of testing}
+	{
+		This program will be tested using a series of examples
+		with known answers.
+		\begin{itemize}
+		{
+			\item \texttt{addition.txt}: Assigns `z' to the sum of the two
+				values stored in `x' and `y'. (Example from book) 
+				
+			\item \texttt{multiplication.txt}: Assigns `z' to the product of the two
+				values stored in `x' and `y'. (Example from book) 
+			
+			\item \texttt{exponential.txt}: Assigns `z' to `b' raised to the
+				power of `e'.
+			
+			\item \texttt{arithmetic.txt}: Tests all built-in operations using
+				the values stored in `x' and `y'.
+				
+			\item \texttt{fibonacci.txt}: Given `x', will assign `a' to the x-th
+				value in the fibonacci series using `b' and `c' as temporary
+				values.
+			
+			\item \texttt{sort-3.txt}: Given `a', `b', and `c', will assign their
+				values into `x', `y' and `z' in ascending order.
+		}
+		\end{itemize}
+	}
+	
+	\section {Example Execution}
+	{
+		\subsection {Addition}
+		{
+			\texttt{\$ ./gen/pl -d `x = 3' -d `y = 5' ./examples/addition.txt}\\
+			\texttt{x = 3, y = 5, z = 8}\\
+			\texttt{\$ ./gen/pl -d `x = 9' -d `y = 3' ./examples/addition.txt}\\
+			\texttt{x = 9, y = 3, z = 12}\\
+			\texttt{\$ ./gen/pl -d `x = 17' -d `y = 31' ./examples/addition.txt}\\
+			\texttt{x = 17, y = 31, z = 48}\\
+		}
+		
+		\subsection {Multiplication}
+		{
+			\texttt{\$ ./gen/pl -d `x = 3' -d `y = 5' ./examples/multiplication.txt}\\
+			\texttt{x = 3, y = 5, z = 15}\\
+			\texttt{\$ ./gen/pl -d `x = 9' -d `y = 3' ./examples/multiplication.txt}\\
+			\texttt{x = 9, y = 3, z = 27}\\
+			\texttt{\$ ./gen/pl -d `x = 17' -d `y = 31' ./examples/multiplication.txt}\\
+			\texttt{x = 17, y = 31, z = 527}\\
+		}
+		
+		\subsection {Exponential}
+		{
+			\texttt{\$ ./gen/pl -d `b = 3' -d `e = 5' ./examples/exponential.txt}\\
+			\texttt{b = 3, e = 5, z = 243}\\
+			\texttt{\$ ./gen/pl -d `b = 9' -d `e = 3' ./examples/exponential.txt}\\
+			\texttt{b = 9, e = 3, z = 729}\\
+			\texttt{\$ ./gen/pl -d `b = 17' -d `e = 31' ./examples/exponential.txt}\\
+			\texttt{b = 17, e = 31, z = 139288917338851014461418017489467720433}\\
+		}
+		
+		\subsection {Arithmetic}
+		{
+			\texttt{\$ ./gen/pl -d `x = 3' -d `y = 5' ./examples/arithmetic.txt}\\
+			\texttt{a = 8, b = 0, c = 15, d = 0, e = 0, f = 1, g = 0, h = 0, i = 1, j = 1, k = 1, l = 1, m = 0, x = 3, y = 5}\\
+			\texttt{\$ ./gen/pl -d `x = 9' -d `y = 3' ./examples/arithmetic.txt}\\
+			\texttt{a = 12, b = 6, c = 27, d = 3, e = 0, f = 1, g = 1, h = 1, i = 0, j = 0, k = 1, l = 1, m = 0, x = 9, y = 3}\\
+			\texttt{\$ ./gen/pl -d `x = 17' -d `y = 31' ./examples/arithmetic.txt}\\
+			\texttt{a = 48, b = 0, c = 527, d = 0, e = 0, f = 1, g = 0, h = 0, i = 1, j = 1, k = 1, l = 1, m = 0, x = 17, y = 31}\\
+		}
+		
+		\subsection {Fibonacci}
+		{
+			\texttt{\$ ./gen/pl -d `x = 3'./examples/fibonacci.txt}\\
+			\texttt{a = 2, b = 3, c = 3, x = 0}\\
+			\texttt{\$ ./gen/pl -d `x = 9' ./examples/fibonacci.txt}\\
+			\texttt{a = 34, b = 55, c = 55, x = 0}\\
+			\texttt{\$ ./gen/pl -d `x = 17' ./examples/fibonacci.txt}\\
+			\texttt{a = 1597, b = 2584, c = 2584, x = 0}\\
+		}
+		
+		\subsection {Sort-3}
+		{
+			\texttt{\$ ./gen/pl -d `a = 3' -d `b = 5' -d `c = 2' ./examples/sort-3.txt}\\
+			\texttt{a = 3, b = 5, c = 2, switch = 1, x = 2, y = 3, z = 5}\\
+			\texttt{\$ ./gen/pl -d `a = 2' -d `b = 5' -d `c = 3' ./examples/sort-3.txt}\\
+			\texttt{a = 2, b = 5, c = 3, switch = 5, x = 2, y = 3, z = 5}\\
+			\texttt{\$ ./gen/pl -d `a = 3' -d `b = 2' -d `c = 5' ./examples/sort-3.txt}\\
+			\texttt{a = 3, b = 2, c = 5, switch = 3, x = 2, y = 3, z = 5}\\
+		}
+	}
+}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

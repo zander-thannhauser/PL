@@ -1,0 +1,159 @@
+
+\documentclass[letterpaper,11pt]{article}
+
+\pagenumbering{gobble}
+
+\begin{document}
+{
+	\title{CS 6800: Final Report}
+	\author{Alex Thannhauser}
+	\date{December 13th 2021}
+
+	\maketitle
+	
+	\section{Project Description}
+	{
+		The main goal of this project is to write an implmentation for the
+		extended PL language. The program would be able to read and execute
+		a program described in an input file and would print the final state of
+		all variables involved in the computation.
+	}
+	
+	\section{Research/Design}
+	{
+		Below is the overall structure of the program:
+		\begin{enumerate}
+		{
+			\item Parse command-line flags
+			\item Allocate variable and label scope. \texttt{avl\_alloc\_tree}
+			\item Add each variable declared in the command-line flags into
+				variable scope (\texttt{avl\_insert})
+			\item Open and Parse Input File, yielding a statement graph.
+			\item \texttt{statement = } start
+			\item \texttt{while statement != NULL}:
+			\begin{enumerate}
+				\item Execute statement, yielding the next statement to execute.
+				\item \texttt{statement = } next statement
+			\end{enumerate}
+			\item Print all variables in scope
+			\item Free statement graph
+			\item Free scopes
+			\item Free command-line flags
+		}
+		\end{enumerate}
+	}
+	
+	\section{Implementation/Tools Used}
+	{
+		\begin{itemize}
+		{
+			\item Use Bison and Flex for generating the parser.
+			\item Use GMP for integer computation.
+			\item Use Reference Counting for determining when to call
+				\texttt{free} on \texttt{malloc}-ed memory.
+			\item Use Make and GCC for building and compiling the program. Make
+				is also used for building GMP if not already installed in
+				the system.
+			\item \texttt{mpz\_add}, \texttt{mpz\_sub}, \texttt{mpz\_mul}, and
+				\texttt{mpz\_fdiv\_q} are the functions in the GMP library for
+				doing additiona, subtraction, multiplication and division
+				respectively.
+			\item \texttt{libavl} can be used to create a binary tree to map
+				variable names to values.
+				(\texttt{avl\_alloc\_tree} \& \texttt{avl\_search}).
+		}
+		\end{itemize}
+	}
+	
+	\section{Testing/Samples}
+	{
+		\texttt{\$ ./gen/pl -d `x = 3' -d `y = 5' ./examples/addition.txt}\\
+		\texttt{x = 3, y = 5, z = 8}\\
+		\texttt{\$ ./gen/pl -d `x = 9' -d `y = 3' ./examples/multiplication.txt}\\
+		\texttt{x = 9, y = 3, z = 27}\\
+		\texttt{\$ ./gen/pl -d `b = 3' -d `e = 5' ./examples/exponential.txt}\\
+		\texttt{b = 3, e = 5, z = 243}\\
+		\texttt{\$ ./gen/pl -d `x = 3' -d `y = 5' ./examples/arithmetic.txt}\\
+		\texttt{a = 8, b = 0, c = 15, d = 0, e = 0, f = 1, g = 0, h = 0, i = 1, j = 1, k = 1, l = 1, m = 0, x = 3, y = 5}\\
+		\texttt{\$ ./gen/pl -d `x = 3'./examples/fibonacci.txt}\\
+		\texttt{a = 2, b = 3, c = 3, x = 0}\\
+		\texttt{\$ ./gen/pl -d `a = 3' -d `b = 5' -d `c = 2' ./examples/sort-3.txt}\\
+		\texttt{a = 3, b = 5, c = 2, switch = 1, x = 2, y = 3, z = 5}\\
+	}
+	
+	\section{Goals Reached}
+	{
+		\begin{enumerate}
+			\item rearrange grammar such that \texttt{bison} \& \texttt{flex}
+			can generate a parser without errors. (done)
+			
+			\item use the reduction rules in generated parser to generate
+			expression trees and statement graphs. (done)
+			
+			\item implement main computation loop and expression evaluation code
+			using GMP for integer computation. (done)
+			
+			\item Ensure that at the execution of the program there are no
+				memory leaks and that there are no valgrind errors. (done)
+				
+			\item Ensure that any input file that follows the above grammar
+			could be executed by the program. This goal was not met for two reasons:
+			\begin{enumerate}
+				\item Programs with unreachable statements would result in an
+				error. This is due to the fact that as the parses reads the input
+				file, statement structs are allocated with references
+				to the statements that would be transitioned to. For instance,
+				an \texttt{if} statement has a reference to the first statement
+				of the true case, as well as a reference to the first statement
+				of the false case. These are the two paths forward in execution.
+				Currently, the program throws an error if it cannot connect the
+				whole program together in one long chain of references because
+				as of right now, the program uses the chain of references to free
+				the allocated statements at the end of execution and by allowing
+				for multiple disconnected chains we would no longer be able to
+				(conveniently) ensure no memory leaks.
+				
+				\item GOTOs can only go upwards in the file. This is due to the
+				fact that according to the language specifcation, labels can be
+				reassigned, and that a GOTO should transition to the statement
+				most recently assigned to the given label at the time of parsing
+				the GOTO. This behaviour does function but made it difficult to
+				also implement the ability for GOTOs to refer to labels
+				yet-to-be-declared.
+			\end{enumerate}
+		\end{enumerate}
+	}
+	
+	\section{References}
+	{
+		\begin{itemize}
+			\item https://gmplib.org/
+			\item https://www.gnu.org/software/make/manual/html\_node/Automatic-Variables.html
+			\item Theory of Computation by Walter S. Brainerd, page 38.
+		\end{itemize}
+	}
+	
+}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+
+# assuming 'a', 'b', and 'c' are already set.
+# assigns 'x', 'y', and 'z' to the values of 'a', 'b', 'c' in ascending order.
+
+switch <- (a < b) * 4 + (b < c) * 2 + (a < c);
+
+     if switch = 0 then stop; # impossible
+else if switch = 1 then x <- c; y <- a; z <- b;
+else if switch = 2 then x <- b; y <- a; z <- c;
+else if switch = 3 then x <- b; y <- a; z <- c;
+else if switch = 4 then x <- c; y <- a; z <- b;
+else if switch = 5 then x <- a; y <- c; z <- b;
+else if switch = 6 then stop; # impossible
+else if switch = 7 then x <- a; y <- b; z <- c;
+
+end end end end 
+end end end end 

@@ -49,6 +49,9 @@ static int process_numeral();
 0{D}+		{ return (process_numeral()); }
 {D}+		{ return (process_numeral()); }
 
+"("		{ return (OPEN_PAREN); }
+")"		{ return (CLOSE_PAREN); }
+
 ":"		{ return (COLON); }
 "+"		{ return (PLUS); }
 "-"		{ return (MINUS); }
@@ -68,7 +71,7 @@ static int process_numeral();
 
 "\n"		{ (*line)++; }
 [ \t\v\f]	{ }
-.			{ /* ignore bad characters */ }
+.			{ }
 
 %%
 

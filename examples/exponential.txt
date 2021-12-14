@@ -1,0 +1,7 @@
+
+# 'b' and 'e' are expected to be declared on the command-line
+
+z <- 1;
+loop e do
+	z <- z * b;
+end

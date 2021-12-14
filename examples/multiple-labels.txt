@@ -1,0 +1,19 @@
+
+x <- 0;
+
+again: _ <- 0; # no-op
+if x then
+	x <- 0;
+else
+	x <- 1;
+	goto again;
+end
+
+again: _ <- 0; # no-op
+if x then
+	x <- 2;
+else
+	x <- 1;
+	goto again;
+end
+
